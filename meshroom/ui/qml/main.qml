@@ -2,12 +2,19 @@ import QtCore
 
 import QtQuick
 import QtQuick.Controls
+import QtQml
+
 import QtQuick.Dialogs
 
 import Qt.labs.platform as Platform
 
 ApplicationWindow {
     id: _window
+
+    QtObject {
+    id: translator
+   }
+
 
     width: settingsGeneral.windowWidth
     height: settingsGeneral.windowHeight
@@ -164,7 +171,10 @@ ApplicationWindow {
         shortcut: "Ctrl+Shift+P"
         onTriggered: _PaletteManager.togglePalette()
     }
+     
 
+
+    
     StackView {
         id: mainStack
         anchors.fill: parent
@@ -184,6 +194,78 @@ ApplicationWindow {
         replaceEnter: Transition {}
         replaceExit: Transition {}
     }
+
+    
+    // Add somewhere at the top of main.qml
+    
+
+   
+Row {
+    id: controlButtons
+    spacing: 20
+    anchors.bottom: parent.bottom
+    anchors.right: parent.right
+    anchors.margins: 20
+
+    // Language Dropdown (demo: switches text manually)
+    ComboBox {
+        id: languageSelector
+        model: ["English", "한국어"]
+        width: 120
+
+        onCurrentIndexChanged: {
+            if (currentIndex === 0) {
+                _window.title = "Meshroom - English Mode"
+            } else {
+                _window.title = "메쉬룸 - 한국어 모드"
+            }
+        }
+    }
+    ComboBox {
+    id: themeSelector
+    model: ["Default", "Dark", "Light"]
+    width: 120
+
+    onCurrentIndexChanged: {
+        if (currentIndex === 0) {
+            _PaletteManager.setTheme("default")
+        } else if (currentIndex === 1) {
+            _PaletteManager.setTheme("dark")
+        } else {
+            _PaletteManager.setTheme("light")
+        }
+    }
+}
+
+
+    // Theme Toggle
+    Row {
+    spacing: 8
+    Label {
+        text: qsTr("Theme")
+        color: palette.text
+    }
+
+    Switch {
+        id: themeSwitch
+        checked: true   // start dark
+        onToggled: {
+            if (checked) {
+                _PaletteManager.setTheme("dark")
+            } else {
+                _PaletteManager.setTheme("light")
+            }
+        }
+    }
+}
+
+}
+
+
+
+
+
+
 
     background: MouseArea {
         onPressed: {

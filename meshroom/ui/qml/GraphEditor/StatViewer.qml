@@ -17,6 +17,11 @@ Item {
     /// Statistics source file
     property url source
 
+    property color backgroundColor: _PaletteManager.window
+    property color textColor: _PaletteManager.text
+    property color chartBackground: "transparent"
+
+
     property var sourceModified: undefined
     property var jsonObject
     property real fileVersion: 0.0
@@ -471,49 +476,33 @@ Item {
 **************************/
 
             InteractiveChartView {
-                id: gpuChart
-
+                id: cpuChart
                 Layout.fillWidth: true
-                Layout.preferredHeight: width/2
-                margins.top: 0
-                margins.bottom: 0
+                Layout.preferredHeight: width / 2
                 antialiasing: true
-                legend.color: textColor
-                legend.labelColor: textColor
-                theme: ChartView.ChartThemeLight
-                backgroundColor: "transparent"
-                plotAreaColor: "transparent"
+
+                legend.visible: false
+                theme: themeManager.darkMode ? ChartView.ChartThemeDark : ChartView.ChartThemeLight
+                backgroundColor: chartBackground
+                plotAreaColor: chartBackground
                 titleColor: textColor
 
-                visible: (root.fileVersion >= 2.0)  // No GPU information was collected before stats 2.0 fileVersion
-                title: (root.gpuName || root.gpuTotalMemory) ? ("GPU: " + root.gpuName + ", " + root.gpuTotalMemory + "MB") : "No GPU"
-
                 ValueAxis {
-                    id: valueGpuY
+                    id: valueCpuY
                     min: 0
-                    max: root.gpuMaxAxis
-                    titleText: "<span style='color: " + textColor + "'>%, °C</span>"
-                    color: textColor
-                    gridLineColor: textColor
-                    minorGridLineColor: textColor
-                    shadesColor: textColor
-                    shadesBorderColor: textColor
+                    max: 100
+                    titleText: "<span style='color: " + textColor + "'>%</span>"
                     labelsColor: textColor
                 }
-
                 ValueAxis {
-                    id: valueGpuX
+                    id: valueCpuX
                     min: 0
                     max: root.deltaTime * Math.max(1, root.nbReads)
                     titleText: "<span style='color: " + textColor + "'>Minutes</span>"
-                    color: textColor
-                    gridLineColor: textColor
-                    minorGridLineColor: textColor
-                    shadesColor: textColor
-                    shadesBorderColor: textColor
                     labelsColor: textColor
                 }
             }
+
         }
     }
 }
